@@ -21,6 +21,10 @@ class Filter extends SingletonAbstract implements FilterInterface
      */
     const DEFAULT_CHARSET = 'UTF-8';
     /**
+     * The name of the index used in the options array to set the conf settings
+     */
+    const CUSTOM_CONFIGURATIONS_INDEX_NAME = 'configObjOptions';
+    /**
      * Array of configs needed for purifying some variables with the purifier library
      * @var array
      */
@@ -42,6 +46,7 @@ class Filter extends SingletonAbstract implements FilterInterface
         self::TYPE_NUMBER,
         self::TYPE_RICH,
         self::TYPE_STRING,
+        self::TYPE_CUSTOM,
         self::TYPE_UNKNOWN
     ];
 
@@ -187,13 +192,66 @@ class Filter extends SingletonAbstract implements FilterInterface
     }
 
     /**
+     * Cleans a string by custom rules set through the options array
+     * @param string $dirtyVar The dirty string
+     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
+     * @return string
+     * @throws Exception
+     */
+    public static function filterCustom($dirtyVar, array $options = []) {
+        $charset = isset($options['charset'])?$options['charset']:self::DEFAULT_CHARSET;
+        $configObjOptions = [
+            'Core.Encoding' => $charset,
+        ];
+        if(isset($options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME])) {
+            $options = $options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME] + $configObjOptions;
+            $configObjOptions = $options;
+        }
+        else {
+            $indexName = self::CUSTOM_CONFIGURATIONS_INDEX_NAME;
+            throw new Exception("Index {$indexName} for custom configurations was not found!!!");
+        }
+        return self::clean($dirtyVar, self::TYPE_CUSTOM, $configObjOptions);
+    }
+
+    /**
      * Filters a variable by applying the specified filter
      * @param mixed $dirtyVar The variable to be filtered
      * @param string $filterType A filter type
+     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
      * @return mixed The clean value
      */
-    public static function filter($dirtyVar, $filterType)
+    public static function filter($dirtyVar, $filterType, array $options = [])
     {
-        // TODO: Implement filter() method.
+        switch($filterType) {
+            case self::TYPE_BOOLEAN:
+                $cleanVar = self::filterBoolean($dirtyVar);
+                break;
+            case self::TYPE_FLOAT:
+                $cleanVar = self::filterFloat($dirtyVar);
+                break;
+            case self::TYPE_NUMBER:
+                $cleanVar = self::filterNumber($dirtyVar);
+                break;
+            case self::TYPE_INTEGER:
+                $cleanVar = self::filterInt($dirtyVar);
+                break;
+            case self::TYPE_EMAIL:
+                $cleanVar = self::filterEmail($dirtyVar);
+                break;
+            case self::TYPE_STRING:
+                $cleanVar = self::filterString($dirtyVar);
+                break;
+            case self::TYPE_RICH:
+                $cleanVar = self::filterRich($dirtyVar);
+                break;
+            case self::TYPE_CUSTOM:
+                $cleanVar = self::filterCustom($dirtyVar, $options);
+                break;
+            default:
+                $cleanVar = '';
+                break;
+        }
+        return $cleanVar;
     }
 }

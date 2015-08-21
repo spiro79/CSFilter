@@ -42,6 +42,10 @@ interface FilterInterface
      */
     const TYPE_RICH = 'rich';
     /**
+     * Defines a custom filter to be applied to a string
+     */
+    const TYPE_CUSTOM = 'custom';
+    /**
      * Defines a filter to be applied to an unknown type var
      */
     const TYPE_UNKNOWN = 'default';
