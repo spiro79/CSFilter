@@ -6,7 +6,9 @@
         "ezyang/htmlpurifier": "^4.7"
     },
     "autoload": {
-        "psr-4": { "CSFilter": "src/" }
+        "psr-4": {
+            "CSFilter\\": "src/"
+        }
     },
     "license": "proprietary",
     "authors": [
