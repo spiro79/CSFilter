@@ -62,8 +62,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @static
      * @return SingletonInterface
      */
-    public static function getInstance() {
-        if(null === self::$instance) {
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
             self::$instance = new static();
         }
         return self::$instance;
@@ -73,7 +74,8 @@ class Filter extends SingletonAbstract implements FilterInterface
      * Return the array of allowed filters
      * @return array
      */
-    public static function getAllowedFilters() {
+    public static function getAllowedFilters()
+    {
         return self::$allowedFilters;
     }
 
@@ -82,8 +84,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return bool
      */
-    public static function filterBoolean($dirtyVar) {
-        return (bool) $dirtyVar;
+    public static function filterBoolean($dirtyVar)
+    {
+        return (bool)$dirtyVar;
     }
 
     /**
@@ -91,7 +94,8 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty value
      * @return string A string with valid numeric characters
      */
-    public static function filterNumber($dirtyVar) {
+    public static function filterNumber($dirtyVar)
+    {
         return filter_var($dirtyVar, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC);
     }
 
@@ -100,9 +104,10 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return float
      */
-    public static function filterFloat($dirtyVar) {
+    public static function filterFloat($dirtyVar)
+    {
         $cleanVar = self::filterNumber($dirtyVar);
-        return (float) $cleanVar;
+        return (float)$cleanVar;
     }
 
     /**
@@ -110,9 +115,10 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return int
      */
-    public static function filterInt($dirtyVar) {
+    public static function filterInt($dirtyVar)
+    {
         $cleanVar = self::filterNumber($dirtyVar);
-        return (integer) $cleanVar;
+        return (integer)$cleanVar;
     }
 
     /**
@@ -120,7 +126,8 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty value
      * @return string A clean string without characters that do not belong to an email standard
      */
-    public static function filterEmail($dirtyVar) {
+    public static function filterEmail($dirtyVar)
+    {
         return filter_var($dirtyVar, FILTER_SANITIZE_EMAIL);
     }
 
@@ -132,23 +139,22 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @return string The clean value
      * @throws Exception
      */
-    protected static function clean($dirtyValue, $filterType, array $optionsForPurifierLib = []) {
-        if(in_array($filterType, self::$allowedFilters)) {
+    protected static function clean($dirtyValue, $filterType, array $optionsForPurifierLib = [])
+    {
+        if (in_array($filterType, self::$allowedFilters)) {
             $configHash = md5($filterType . json_encode($optionsForPurifierLib));
-            if(isset(self::$configs[$configHash])) {
+            if (isset(self::$configs[$configHash])) {
                 $configObj = self::$configs[$configHash];
-            }
-            else {
+            } else {
                 $configObj = HTMLPurifier_Config::createDefault();
-                foreach($optionsForPurifierLib as $option => $value) {
-                    $configObj->set($option,$value);
+                foreach ($optionsForPurifierLib as $option => $value) {
+                    $configObj->set($option, $value);
                 }
                 self::$configs[$configHash] = $configObj;
             }
             $purifierLib = new HTMLPurifier($configObj);
             $purifiedValue = $purifierLib->purify($dirtyValue);
-        }
-        else {
+        } else {
             $validTypes = implode('\',\'', self::$allowedFilters);
             throw new Exception("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
         }
@@ -162,8 +168,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @return string
      * @throws Exception
      */
-    public static function filterString($dirtyVar, array $options = []) {
-        $charset = isset($options['charset'])?$options['charset']:self::DEFAULT_CHARSET;
+    public static function filterString($dirtyVar, array $options = [])
+    {
+        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
         $configObjOptions = [
             'Core.Encoding' => $charset,
             'HTML.Allowed' => '',
@@ -178,8 +185,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @return string The cleansed string
      * @throws Exception
      */
-    public static function filterRich($dirtyVar, array $options = []) {
-        $charset = isset($options['charset'])?$options['charset']:self::DEFAULT_CHARSET;
+    public static function filterRich($dirtyVar, array $options = [])
+    {
+        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
         $configObjOptions = [
             'Core.Encoding' => $charset,
             'HTML.Doctype' => 'XHTML 1.0 Strict',
@@ -198,16 +206,16 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @return string
      * @throws Exception
      */
-    public static function filterCustom($dirtyVar, array $options = []) {
-        $charset = isset($options['charset'])?$options['charset']:self::DEFAULT_CHARSET;
+    public static function filterCustom($dirtyVar, array $options = [])
+    {
+        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
         $configObjOptions = [
             'Core.Encoding' => $charset,
         ];
-        if(isset($options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME])) {
+        if (isset($options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME])) {
             $options = $options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME] + $configObjOptions;
             $configObjOptions = $options;
-        }
-        else {
+        } else {
             $indexName = self::CUSTOM_CONFIGURATIONS_INDEX_NAME;
             throw new Exception("Index {$indexName} for custom configurations was not found!!!");
         }
@@ -223,7 +231,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      */
     public static function filter($dirtyVar, $filterType, array $options = [])
     {
-        switch($filterType) {
+        switch ($filterType) {
             case self::TYPE_BOOLEAN:
                 $cleanVar = self::filterBoolean($dirtyVar);
                 break;

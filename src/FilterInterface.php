@@ -56,5 +56,5 @@ interface FilterInterface
      * @param string $filterType A filter type
      * @return mixed The clean value
      */
-    public static function filter($dirtyVar,$filterType);
+    public static function filter($dirtyVar, $filterType);
 }
