@@ -14,6 +14,14 @@ namespace DE\CSFilter;
 interface FilterInterface
 {
     /**
+     * Defines the value for the default charset
+     */
+    const DEFAULT_CHARSET = 'UTF-8';
+    /**
+     * The name of the index used in the options array to set the conf settings
+     */
+    const CUSTOM_CONFIGURATIONS_INDEX_NAME = 'configObjOptions';
+    /**
      * Defines a filter to be applied to a boolean var
      */
     const TYPE_BOOLEAN = 'bool';
@@ -56,5 +64,5 @@ interface FilterInterface
      * @param string $filterType A filter type
      * @return mixed The clean value
      */
-    public static function filter($dirtyVar, $filterType);
+    public function filter($dirtyVar, $filterType);
 }

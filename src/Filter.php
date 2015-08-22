@@ -7,9 +7,6 @@
 
 namespace DE\CSFilter;
 
-use \HTMLPurifier;
-use \HTMLPurifier_Config;
-
 /**
  * Class Filter
  * @package DE\CSFilter
@@ -17,28 +14,16 @@ use \HTMLPurifier_Config;
 class Filter extends SingletonAbstract implements FilterInterface
 {
     /**
-     * Defines the value for the default charset
+     * An instance of the external library to be used to execute complex filters
+     * @var ExternalLibInterface
      */
-    const DEFAULT_CHARSET = 'UTF-8';
-    /**
-     * The name of the index used in the options array to set the conf settings
-     */
-    const CUSTOM_CONFIGURATIONS_INDEX_NAME = 'configObjOptions';
-    /**
-     * Array of configs needed for purifying some variables with the purifier library
-     * @var array
-     */
-    protected static $configs = [];
-    /**
-     * An instance of the purifiers library to be used
-     * @var object
-     */
-    protected static $purifierLib;
+    protected $externalLib;
     /**
      * An array with the allowed options for the filters
+     * @access protected
      * @var array
      */
-    protected static $allowedFilters = [
+    protected $allowedFilters = [
         self::TYPE_BOOLEAN,
         self::TYPE_EMAIL,
         self::TYPE_INTEGER,
@@ -71,12 +56,34 @@ class Filter extends SingletonAbstract implements FilterInterface
     }
 
     /**
+     * External lib setter
+     * @param ExternalLibInterface $externalLib
+     * @return $this
+     */
+    public function setExternalLib (ExternalLibInterface $externalLib) {
+        $this->externalLib = $externalLib;
+        return $this;
+    }
+
+    /**
+     * External lib getter
+     * @return ExternalLibInterface
+     * @throws Exception
+     */
+    public function getExternalLib () {
+        if(!$this->externalLib instanceof ExternalLibInterface) {
+            throw new Exception('An external library has not been set.');
+        }
+        return $this->externalLib;
+    }
+
+    /**
      * Return the array of allowed filters
      * @return array
      */
-    public static function getAllowedFilters()
+    public function getAllowedFilters()
     {
-        return self::$allowedFilters;
+        return $this->allowedFilters;
     }
 
     /**
@@ -84,7 +91,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return bool
      */
-    public static function filterBoolean($dirtyVar)
+    public function filterBoolean($dirtyVar)
     {
         return (bool)$dirtyVar;
     }
@@ -94,7 +101,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty value
      * @return string A string with valid numeric characters
      */
-    public static function filterNumber($dirtyVar)
+    public function filterNumber($dirtyVar)
     {
         return filter_var($dirtyVar, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC);
     }
@@ -104,9 +111,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return float
      */
-    public static function filterFloat($dirtyVar)
+    public function filterFloat($dirtyVar)
     {
-        $cleanVar = self::filterNumber($dirtyVar);
+        $cleanVar = $this->filterNumber($dirtyVar);
         return (float)$cleanVar;
     }
 
@@ -115,9 +122,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return int
      */
-    public static function filterInt($dirtyVar)
+    public function filterInt($dirtyVar)
     {
-        $cleanVar = self::filterNumber($dirtyVar);
+        $cleanVar = $this->filterNumber($dirtyVar);
         return (integer)$cleanVar;
     }
 
@@ -126,138 +133,85 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty value
      * @return string A clean string without characters that do not belong to an email standard
      */
-    public static function filterEmail($dirtyVar)
+    public function filterEmail($dirtyVar)
     {
         return filter_var($dirtyVar, FILTER_SANITIZE_EMAIL);
     }
 
     /**
-     * Cleans a variable according to type and settings by using a third party library
-     * @param string $dirtyValue The value to be cleaned
-     * @param string $filterType What type of filter to apply
-     * @param array $optionsForPurifierLib Assoc array of options for the library conf object
-     * @return string The clean value
-     * @throws Exception
-     */
-    protected static function clean($dirtyValue, $filterType, array $optionsForPurifierLib = [])
-    {
-        if (in_array($filterType, self::$allowedFilters)) {
-            $configHash = md5($filterType . json_encode($optionsForPurifierLib));
-            if (isset(self::$configs[$configHash])) {
-                $configObj = self::$configs[$configHash];
-            } else {
-                $configObj = HTMLPurifier_Config::createDefault();
-                foreach ($optionsForPurifierLib as $option => $value) {
-                    $configObj->set($option, $value);
-                }
-                self::$configs[$configHash] = $configObj;
-            }
-            $purifierLib = new HTMLPurifier($configObj);
-            $purifiedValue = $purifierLib->purify($dirtyValue);
-        } else {
-            $validTypes = implode('\',\'', self::$allowedFilters);
-            throw new Exception("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
-        }
-        return $purifiedValue;
-    }
-
-    /**
      * Cleans a string
      * @param mixed $dirtyVar The value to be cleansed
-     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8 [OPTIONAL]
+     * @param array $options Additional options [OPTIONAL]
      * @return string
      * @throws Exception
      */
-    public static function filterString($dirtyVar, array $options = [])
+    public function filterString($dirtyVar, array $options = [])
     {
-        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
-        $configObjOptions = [
-            'Core.Encoding' => $charset,
-            'HTML.Allowed' => '',
-        ];
-        return self::clean($dirtyVar, self::TYPE_STRING, $configObjOptions);
+        return $this->getExternalLib()->filterString($dirtyVar, $options);
     }
 
     /**
      * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike)
      * @param string $dirtyVar The dirty string
-     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8 [OPTIONAL]
+     * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
      * @throws Exception
      */
-    public static function filterRich($dirtyVar, array $options = [])
+    public function filterRich($dirtyVar, array $options = [])
     {
-        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
-        $configObjOptions = [
-            'Core.Encoding' => $charset,
-            'HTML.Doctype' => 'XHTML 1.0 Strict',
-            'HTML.Allowed' => 'p,a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike',
-            'AutoFormat.AutoParagraph' => true,
-            'AutoFormat.Linkify' => true,
-            'AutoFormat.RemoveEmpty' => true,
-        ];
-        return self::clean($dirtyVar, self::TYPE_RICH, $configObjOptions);
+        return $this->getExternalLib()->filterRich($dirtyVar, $options);
     }
 
     /**
      * Cleans a string by custom rules set through the options array
      * @param string $dirtyVar The dirty string
-     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
-     * @return string
+     * @param array $options Additional options. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
+     * @return string The cleansed string
      * @throws Exception
      */
-    public static function filterCustom($dirtyVar, array $options = [])
+    public function filterCustom($dirtyVar, array $options = [])
     {
-        $charset = isset($options['charset']) ? $options['charset'] : self::DEFAULT_CHARSET;
-        $configObjOptions = [
-            'Core.Encoding' => $charset,
-        ];
-        if (isset($options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME])) {
-            $options = $options[self::CUSTOM_CONFIGURATIONS_INDEX_NAME] + $configObjOptions;
-            $configObjOptions = $options;
-        } else {
-            $indexName = self::CUSTOM_CONFIGURATIONS_INDEX_NAME;
-            throw new Exception("Index {$indexName} for custom configurations was not found!!!");
-        }
-        return self::clean($dirtyVar, self::TYPE_CUSTOM, $configObjOptions);
+        return $this->getExternalLib()->filterCustom($dirtyVar, $options);
     }
 
     /**
      * Filters a variable by applying the specified filter
      * @param mixed $dirtyVar The variable to be filtered
      * @param string $filterType A filter type
-     * @param array $options Additional options defining the charset to be used as array('charset' => 'ISO8859-1'). Defaults to UTF-8. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
+     * @param array $options Additional options. For config options use an index named after the CUSTOM_CONFIGURATIONS_INDEX_NAME constant
      * @return mixed The clean value
+     * @throws Exception
      */
-    public static function filter($dirtyVar, $filterType, array $options = [])
+    public function filter($dirtyVar, $filterType, array $options = [])
     {
         switch ($filterType) {
             case self::TYPE_BOOLEAN:
-                $cleanVar = self::filterBoolean($dirtyVar);
+                $cleanVar = $this->filterBoolean($dirtyVar);
                 break;
             case self::TYPE_FLOAT:
-                $cleanVar = self::filterFloat($dirtyVar);
+                $cleanVar = $this->filterFloat($dirtyVar);
                 break;
             case self::TYPE_NUMBER:
-                $cleanVar = self::filterNumber($dirtyVar);
+                $cleanVar = $this->filterNumber($dirtyVar);
                 break;
             case self::TYPE_INTEGER:
-                $cleanVar = self::filterInt($dirtyVar);
+                $cleanVar = $this->filterInt($dirtyVar);
                 break;
             case self::TYPE_EMAIL:
-                $cleanVar = self::filterEmail($dirtyVar);
+                $cleanVar = $this->filterEmail($dirtyVar);
                 break;
             case self::TYPE_STRING:
-                $cleanVar = self::filterString($dirtyVar);
+                $cleanVar = $this->filterString($dirtyVar);
                 break;
             case self::TYPE_RICH:
-                $cleanVar = self::filterRich($dirtyVar);
+                $cleanVar = $this->filterRich($dirtyVar);
                 break;
             case self::TYPE_CUSTOM:
-                $cleanVar = self::filterCustom($dirtyVar, $options);
+                $cleanVar = $this->filterCustom($dirtyVar, $options);
                 break;
             default:
-                $cleanVar = '';
+                $validTypes = implode('\',\'', $this->allowedFilters);
+                throw new Exception("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
                 break;
         }
         return $cleanVar;

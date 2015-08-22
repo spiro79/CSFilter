@@ -5,6 +5,9 @@
     "require": {
         "ezyang/htmlpurifier": "^4.7"
     },
+    "require-dev" : {
+        "phpunit/phpunit" : "4.8.*"
+    },
     "autoload": {
         "psr-4": {
             "DE\\CSFilter\\": "src/"
