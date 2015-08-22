@@ -5,14 +5,16 @@
  * Time: 9:25 AM
  */
 
-namespace DE\CSFilter;
+namespace DE\CSFilter\ExternalLib;
 
 use \HTMLPurifier;
 use \HTMLPurifier_Config;
+use DE\CSFilter\Exception;
+use DE\CSFilter\Filter;
 
 /**
  * Class HTMLPurifierExternalLib
- * @package DE\CSFilter
+ * @package DE\CSFilter\ExternalLib
  */
 class HTMLPurifierExternalLib implements ExternalLibInterface
 {

@@ -7,6 +7,8 @@
 
 namespace DE\CSFilter;
 
+use DE\CSFilter\ExternalLib\ExternalLibInterface;
+
 /**
  * Class Filter
  * @package DE\CSFilter

@@ -5,11 +5,13 @@
  * Time: 12:37 AM
  */
 
-namespace DE\CSFilter;
+namespace DE\CSFilter\ExternalLib;
+
+use DE\CSFilter\Exception;
 
 /**
  * Interface ExternalLibInterface
- * @package DE\CSFilter
+ * @package DE\CSFilter\ExternalLib
  */
 interface ExternalLibInterface
 {
