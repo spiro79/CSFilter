@@ -7,6 +7,7 @@
 
 namespace DE\CSFilter;
 
+use \ReflectionClass;
 use DE\CSFilter\ExternalLib\ExternalLibInterface;
 
 /**
@@ -25,17 +26,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @access protected
      * @var array
      */
-    protected $allowedFilters = [
-        self::TYPE_BOOLEAN,
-        self::TYPE_EMAIL,
-        self::TYPE_INTEGER,
-        self::TYPE_FLOAT,
-        self::TYPE_NUMBER,
-        self::TYPE_RICH,
-        self::TYPE_STRING,
-        self::TYPE_CUSTOM,
-        self::TYPE_UNKNOWN
-    ];
+    protected $allowedFilters = [];
 
     /**
      * The class instance
@@ -45,14 +36,25 @@ class Filter extends SingletonAbstract implements FilterInterface
     protected static $instance;
 
     /**
+     * Initialize the object
+     */
+    protected function init()
+    {
+        $reflectionClass = new ReflectionClass('DE\CSFilter\FilterInterface');
+        $constants = $reflectionClass->getConstants();
+        self::$instance->allowedFilters = array_values($constants);
+    }
+
+    /**
      * Gets the singleton instance
      * @static
-     * @return SingletonInterface
+     * @return self
      */
     public static function getInstance()
     {
         if (null === self::$instance) {
             self::$instance = new static();
+            self::$instance->init();
         }
         return self::$instance;
     }
@@ -62,7 +64,8 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param ExternalLibInterface $externalLib
      * @return $this
      */
-    public function setExternalLib (ExternalLibInterface $externalLib) {
+    public function setExternalLib(ExternalLibInterface $externalLib)
+    {
         $this->externalLib = $externalLib;
         return $this;
     }
@@ -72,8 +75,9 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @return ExternalLibInterface
      * @throws Exception
      */
-    public function getExternalLib () {
-        if(!$this->externalLib instanceof ExternalLibInterface) {
+    public function getExternalLib()
+    {
+        if (!$this->externalLib instanceof ExternalLibInterface) {
             throw new Exception('An external library has not been set.');
         }
         return $this->externalLib;
@@ -217,5 +221,14 @@ class Filter extends SingletonAbstract implements FilterInterface
                 break;
         }
         return $cleanVar;
+    }
+
+    /**
+     * Tear down.
+     * Resets everything to initial state. Helps with Unit testing ;)
+     */
+    public static function tearDown()
+    {
+        static::$instance = null;
     }
 }
