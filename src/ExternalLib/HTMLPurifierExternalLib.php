@@ -65,7 +65,7 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
     }
 
     /**
-     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike)
+     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i)
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string

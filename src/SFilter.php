@@ -6,6 +6,7 @@
  */
 
 namespace DE\CSFilter;
+use DE\CSFilter\ExternalLib\ExternalLibInterface;
 
 /**
  * Class SFilter
@@ -24,23 +25,30 @@ class SFilter
 
     /**
      * Sets the filter var
-     * @access protected
      * @static
+     * @param ExternalLibInterface $externalLib The external lib adapter to be used
+     * @throws Exception
      */
-    protected static function setFilter()
+    public static function setFilter(ExternalLibInterface $externalLib)
     {
         if (!self::$filter instanceof Filter) {
-            $configs = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
-            if (!isset($configs['default_external_library'])) {
-                throw new Exception('Config value \'default_external_library\' was not found on config.ini');
-            }
-            $className = 'DE\CSFilter\ExternalLib\\' . $configs['default_external_library'];
             self::$filter = Filter::getInstance();
-            if (!class_exists($className)) {
-                throw new Exception('Class set in config.ini: \'' . $configs['default_external_library'] . '\' does not exist.');
-            }
-            $externalLibrary = new $className();
-            self::$filter->setExternalLib($externalLibrary);
+            self::$filter->setExternalLib($externalLib);
+        }
+    }
+
+    /**
+     * Return the filter. If not set throw an Exception
+     * @static
+     * @return Filter
+     * @throws Exception
+     */
+    public static function getFilter()
+    {
+        if (!self::$filter instanceof Filter) {
+            throw new Exception('Filter not set.');
+        } else {
+            return self::$filter;
         }
     }
 
@@ -52,8 +60,7 @@ class SFilter
      */
     public static function filterBoolean($dirtyVar)
     {
-        self::setFilter();
-        return self::$filter->filterBoolean($dirtyVar);
+        return self::getFilter()->filterBoolean($dirtyVar);
     }
 
     /**
@@ -64,8 +71,7 @@ class SFilter
      */
     public static function filterFloat($dirtyVar)
     {
-        self::setFilter();
-        return self::$filter->filterFloat($dirtyVar);
+        return self::getFilter()->filterFloat($dirtyVar);
     }
 
     /**
@@ -76,8 +82,7 @@ class SFilter
      */
     public static function filterInt($dirtyVar)
     {
-        self::setFilter();
-        return self::$filter->filterInt($dirtyVar);
+        return self::getFilter()->filterInt($dirtyVar);
     }
 
     /**
@@ -88,8 +93,7 @@ class SFilter
      */
     public static function filterEmail($dirtyVar)
     {
-        self::setFilter();
-        return self::$filter->filterEmail($dirtyVar);
+        return self::getFilter()->filterEmail($dirtyVar);
     }
 
     /**
@@ -102,8 +106,7 @@ class SFilter
      */
     public static function filterString($dirtyVar, array $options = [])
     {
-        self::setFilter();
-        return self::$filter->filterString($dirtyVar, $options);
+        return self::getFilter()->filterString($dirtyVar, $options);
     }
 
     /**
@@ -116,8 +119,7 @@ class SFilter
      */
     public static function filterRich($dirtyVar, array $options = [])
     {
-        self::setFilter();
-        return self::$filter->filterRich($dirtyVar, $options);
+        return self::getFilter()->filterRich($dirtyVar, $options);
     }
 
     /**
@@ -130,8 +132,7 @@ class SFilter
      */
     public static function filterCustom($dirtyVar, array $options = [])
     {
-        self::setFilter();
-        return self::$filter->filterCustom($dirtyVar, $options);
+        return self::getFilter()->filterCustom($dirtyVar, $options);
     }
 
     /**
@@ -145,7 +146,6 @@ class SFilter
      */
     public static function filter($dirtyVar, $filterType, array $options = [])
     {
-        self::setFilter();
-        return self::$filter->filter($dirtyVar, $filterType, $options);
+        return self::getFilter()->filter($dirtyVar, $filterType, $options);
     }
 }

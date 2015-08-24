@@ -2,9 +2,6 @@
     "name": "de/csfilter",
     "description": "DE Cybersecurity library to face code vulnerabilities",
     "type": "library",
-    "require": {
-        "ezyang/htmlpurifier": "^4.7"
-    },
     "require-dev" : {
         "phpunit/phpunit" : "4.8.*"
     },
@@ -15,7 +12,7 @@
     },
     "authors": [
         {
-            "name": "Spiro Andreakis",
+            "name": "Ernesto Spiro Peimbert Andreakis",
             "email": "ernesto.andreakis@directenergy.com"
         }
     ]
