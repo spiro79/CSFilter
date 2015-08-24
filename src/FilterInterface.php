@@ -34,10 +34,6 @@ interface FilterInterface
      */
     const TYPE_FLOAT = 'float';
     /**
-     * Defines a filter to be applied to a numeric type var
-     */
-    const TYPE_NUMBER = 'number';
-    /**
      * Defines a filter to be applied to an email string
      */
     const TYPE_EMAIL = 'email';

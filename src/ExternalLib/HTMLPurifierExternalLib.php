@@ -77,8 +77,7 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
         $configObjOptions = [
             'Core.Encoding' => $charset,
             'HTML.Doctype' => 'XHTML 1.0 Strict',
-            'HTML.Allowed' => 'p,a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike',
-            'AutoFormat.AutoParagraph' => true,
+            'HTML.Allowed' => 'p,a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i',
             'AutoFormat.Linkify' => true,
             'AutoFormat.RemoveEmpty' => true,
         ];

@@ -30,7 +30,7 @@ class SFilter
     protected static function setFilter()
     {
         if (!self::$filter instanceof Filter) {
-            $configs = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
+            $configs = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
             if (!isset($configs['default_external_library'])) {
                 throw new Exception('Config value \'default_external_library\' was not found on config.ini');
             }
@@ -54,18 +54,6 @@ class SFilter
     {
         self::setFilter();
         return self::$filter->filterBoolean($dirtyVar);
-    }
-
-    /**
-     * Filters a value and returns a numeric string
-     * @static
-     * @param string $dirtyVar The dirty value
-     * @return string A string with valid numeric characters
-     */
-    public static function filterNumber($dirtyVar)
-    {
-        self::setFilter();
-        return self::$filter->filterNumber($dirtyVar);
     }
 
     /**
@@ -119,7 +107,7 @@ class SFilter
     }
 
     /**
-     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike)
+     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i)
      * @static
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]

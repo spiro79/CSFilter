@@ -99,17 +99,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      */
     public function filterBoolean($dirtyVar)
     {
-        return (bool)$dirtyVar;
-    }
-
-    /**
-     * Filters a value and returns a numeric string
-     * @param string $dirtyVar The dirty value
-     * @return string A string with valid numeric characters
-     */
-    public function filterNumber($dirtyVar)
-    {
-        return filter_var($dirtyVar, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC);
+        return (bool)($dirtyVar);
     }
 
     /**
@@ -119,23 +109,23 @@ class Filter extends SingletonAbstract implements FilterInterface
      */
     public function filterFloat($dirtyVar)
     {
-        $cleanVar = $this->filterNumber($dirtyVar);
-        return (float)$cleanVar;
+        return floatval($dirtyVar);
     }
 
     /**
      * Filters a value and returns an int
      * @param mixed $dirtyVar The dirty value
+     * @param int $base The base for the conversion [OPTIONAL]
      * @return int
      */
-    public function filterInt($dirtyVar)
+    public function filterInt($dirtyVar, $base = 0)
     {
-        $cleanVar = $this->filterNumber($dirtyVar);
-        return (integer)$cleanVar;
+        return intval($dirtyVar, $base);
     }
 
     /**
      * Filters a value and returns a filtered email. This functions does not validate the email.
+     * Remove all characters except letters, digits and !#$%&'*+-=?^_`{|}~@.[].
      * @param string $dirtyVar The dirty value
      * @return string A clean string without characters that do not belong to an email standard
      */
@@ -157,7 +147,7 @@ class Filter extends SingletonAbstract implements FilterInterface
     }
 
     /**
-     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i,strike)
+     * Cleans a string allowing certain tags (p, a[href|title],abbr[title],acronym[title],b,strong,blockquote[cite],code,em,i)
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
@@ -196,9 +186,6 @@ class Filter extends SingletonAbstract implements FilterInterface
                 break;
             case self::TYPE_FLOAT:
                 $cleanVar = $this->filterFloat($dirtyVar);
-                break;
-            case self::TYPE_NUMBER:
-                $cleanVar = $this->filterNumber($dirtyVar);
                 break;
             case self::TYPE_INTEGER:
                 $cleanVar = $this->filterInt($dirtyVar);
