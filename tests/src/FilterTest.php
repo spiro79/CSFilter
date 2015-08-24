@@ -24,7 +24,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
     protected function getExternalLibraryMock()
     {
         $mock = $this->getMockBuilder('DE\CSFilter\ExternalLib\ExternalLibInterface')
-            ->setMethods(['filterString', 'filterRich', 'filterCustom'])
+            ->setMethods(['clean', 'filterString', 'filterRich', 'filterCustom'])
             ->getMock();
         $mock->method('filterString')
             ->willReturn('Valid string');
