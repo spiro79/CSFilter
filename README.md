@@ -1,6 +1,6 @@
-#Direct Energy
+# Direct Energy
 
-##Cybersecurity Filter class
+## Cybersecurity Filter class
 
 A Filter class that will filter data to prevent against XSS attacks.
 
@@ -15,7 +15,7 @@ To load it with composer:
 ```
 {
   "require": {
-    "de/csfilter": "^v2.0.0"
+    "de/csfilter": "^2.0.0"
   },
   "repositories": [
     {
@@ -30,13 +30,13 @@ Although the library provides an adapter for HTMLPurifier it does not load it by
 
 If you need HTMLPurifier to work you *MUST* include it to your composer file.
 
-##How to use it?
+## How to use it?
 
 We can use the library either by creating an instance of the Filter class or by using the static facade.
 
 Please note that although the examples show the use of the HTMLPurifier external library, we can use whatever library we want by creating an adapter that implements the DE\CSFilter\ExternalLib\ExternalLibInterface.
 
-###Std class
+### Std class
 
 ```
 use DE\CSFilter\Filter;
@@ -53,7 +53,7 @@ $cleanString = $filter->filterString('<div onClick="alert(\'Hello World\');"><st
 $cleanNumber2 = $filter->filter('76pdnbnrgu rijrf', DE\CSFilter\Filter::TYPE_INTEGER);
 ```
 
-###Static facade
+### Static facade
 
 ```
 use DE\CSFilter\SFilter;
