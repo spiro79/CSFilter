@@ -28,13 +28,13 @@ To load it with composer:
 
 Although the library provides an adapter for HTMLPurifier it does not load it by default.
 
-If you need HTMLPurifier to work you *MUST* include it to your composer file.
+If you need HTMLPurifier to work you **MUST** include it to your composer file.
 
 ## How to use it?
 
 We can use the library either by creating an instance of the Filter class or by using the static facade.
 
-Please note that although the examples show the use of the HTMLPurifier external library, we can use whatever library we want by creating an adapter that implements the DE\CSFilter\ExternalLib\ExternalLibInterface.
+**Please note** that although the examples show the use of the *HTMLPurifier* external library, we can use whatever library we want by creating an adapter that implements the DE\CSFilter\ExternalLib\ExternalLibInterface.
 
 ### Std class
 
