@@ -5,15 +5,15 @@
  * Time: 12:37 AM
  */
 
-namespace DE\CSFilter\ExternalLib;
+namespace DE\CSFilter\ExternalLibAdapter;
 
-use DE\CSFilter\Exception;
+use DE\CSFilter\Exceptions\ConfigurationIndexNotFoundException;
 
 /**
- * Interface ExternalLibInterface
- * @package DE\CSFilter\ExternalLib
+ * Interface ExternalLibAdapterInterface
+ * @package DE\CSFilter\ExternalLibAdapter
  */
-interface ExternalLibInterface
+interface ExternalLibAdapterInterface
 {
     /**
      * Cleans a variable according to type and settings by using a third party library
@@ -21,7 +21,6 @@ interface ExternalLibInterface
      * @param string $filterType What type of filter to apply
      * @param array $optionsForPurifierLib Assoc array of options for the library conf object
      * @return string The clean value
-     * @throws Exception
      */
     public function clean($dirtyValue, $filterType, array $optionsForPurifierLib = []);
 
@@ -30,7 +29,6 @@ interface ExternalLibInterface
      * @param mixed $dirtyVar The value to be cleansed
      * @param array $options Additional options [OPTIONAL]
      * @return string
-     * @throws Exception
      */
     public function filterString($dirtyVar, array $options = []);
 
@@ -39,7 +37,6 @@ interface ExternalLibInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
-     * @throws Exception
      */
     public function filterRich($dirtyVar, array $options = []);
 
@@ -48,7 +45,7 @@ interface ExternalLibInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
      * @return string The cleansed string
-     * @throws Exception
+     * @throws ConfigurationIndexNotFoundException
      */
     public function filterCustom($dirtyVar, array $options = []);
 }

@@ -12,7 +12,7 @@ use DE\CSFilter\Filter;
  */
 class FilterTest extends PHPUnit_Framework_TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         Filter::tearDown();
     }
@@ -23,13 +23,13 @@ class FilterTest extends PHPUnit_Framework_TestCase
      */
     protected function getExternalLibraryMock()
     {
-        $mock = $this->getMockBuilder('DE\CSFilter\ExternalLib\ExternalLibInterface')
+        $mock = $this->getMockBuilder('DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface')
             ->setMethods(['clean', 'filterString', 'filterRich', 'filterCustom'])
             ->getMock();
         $mock->method('filterString')
             ->willReturn('Valid string');
         $mock->method('filterRich')
-            ->willReturn('<p><strong>Valid string</strong></p>');
+            ->willReturn('<strong>Valid string</strong>');
         $mock->method('filterCustom')
             ->willReturn('Valid string to <a href="http://example.com">http://example.com</a>');
         return $mock;
@@ -63,7 +63,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
     {
         $mock = $this->getExternalLibraryMock();
         $filterInstance = Filter::getInstance();
-        $response = $filterInstance->setExternalLib($mock);
+        $response = $filterInstance->setExternalLibAdapter($mock);
         $expectedInstance = 'DE\CSFilter\Filter';
         $this->assertInstanceOf($expectedInstance, $response);
     }
@@ -76,7 +76,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
     {
         $wrongObj = new stdClass();
         $filterInstance = Filter::getInstance();
-        $response = $filterInstance->setExternalLib($wrongObj);
+        $response = $filterInstance->setExternalLibAdapter($wrongObj);
     }
 
     /**
@@ -86,15 +86,15 @@ class FilterTest extends PHPUnit_Framework_TestCase
     {
         $mock = $this->getExternalLibraryMock();
         $filterInstance = Filter::getInstance();
-        $filterInstance->setExternalLib($mock);
+        $filterInstance->setExternalLibAdapter($mock);
         $externalLib = $filterInstance->getExternalLib();
-        $expectedInterface = 'DE\CSFilter\ExternalLib\ExternalLibInterface';
+        $expectedInterface = 'DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface';
         $this->assertInstanceOf($expectedInterface, $externalLib);
     }
 
     /**
      * Tests the exception thrown when the external lib is not set
-     * @expectedException \DE\CSFilter\Exception
+     * @expectedException \DE\CSFilter\Exceptions\ExternalLibAdapterNotSetException
      */
     public function testGetExternalLibWhenUnset()
     {
@@ -113,6 +113,31 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $filterInstance = Filter::getInstance();
         $allowedFilters = $filterInstance->getAllowedFilters();
         $this->assertEquals($expectedAllowedFilters, $allowedFilters);
+    }
+
+    /**
+     * Test a string to be filtered to a specific type
+     */
+    public function testFilter()
+    {
+        $dirtyVal = '456Garbage text';
+        $expectedResult = 456;
+        $filterInstance = Filter::getInstance();
+        $cleanVal = $filterInstance->filter($dirtyVal, FILTER::TYPE_INTEGER);
+        $this->assertEquals($expectedResult, $cleanVal);
+    }
+
+    /**
+     * Test when an invalid filter type is provided
+     * @expectedException \DE\CSFilter\Exceptions\FilterTypeNotValidException
+     */
+    public function testInvalidFilterType()
+    {
+        $dirtyVal = '456Garbage text';
+        $expectedResult = 456;
+        $filterInstance = Filter::getInstance();
+        $cleanVal = $filterInstance->filter($dirtyVal, PHP_EOL);
+        $this->assertEquals($expectedResult, $cleanVal);
     }
 
     /**
@@ -184,7 +209,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $expectedResult = 'Valid string';
         $filterInstance = Filter::getInstance();
         $externalLibrary = $this->getExternalLibraryMock();
-        $filterInstance->setExternalLib($externalLibrary);
+        $filterInstance->setExternalLibAdapter($externalLibrary);
         $cleanVal = $filterInstance->filterString($dirtyVal);
         $this->assertEquals($expectedResult, $cleanVal);
     }
@@ -195,10 +220,10 @@ class FilterTest extends PHPUnit_Framework_TestCase
     public function testFilterRich()
     {
         $dirtyVal = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong></div>';
-        $expectedResult = '<p><strong>Valid string</strong></p>';
+        $expectedResult = '<strong>Valid string</strong>';
         $filterInstance = Filter::getInstance();
         $externalLibrary = $this->getExternalLibraryMock();
-        $filterInstance->setExternalLib($externalLibrary);
+        $filterInstance->setExternalLibAdapter($externalLibrary);
         $cleanVal = $filterInstance->filterRich($dirtyVal);
         $this->assertEquals($expectedResult, $cleanVal);
     }
@@ -212,7 +237,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $expectedResult = 'Valid string to <a href="http://example.com">http://example.com</a>';
         $filterInstance = Filter::getInstance();
         $externalLibrary = $this->getExternalLibraryMock();
-        $filterInstance->setExternalLib($externalLibrary);
+        $filterInstance->setExternalLibAdapter($externalLibrary);
         $configOptions = [
             'Core.Encoding' => 'UTF-8',
             'HTML.Doctype' => 'XHTML 1.0 Strict',

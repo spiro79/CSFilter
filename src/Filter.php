@@ -7,8 +7,10 @@
 
 namespace DE\CSFilter;
 
+use DE\CSFilter\Exceptions\ExternalLibAdapterNotSetException;
+use DE\CSFilter\Exceptions\FilterTypeNotValidException;
 use \ReflectionClass;
-use DE\CSFilter\ExternalLib\ExternalLibInterface;
+use DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface;
 
 /**
  * Class Filter
@@ -18,7 +20,7 @@ class Filter extends SingletonAbstract implements FilterInterface
 {
     /**
      * An instance of the external library to be used to execute complex filters
-     * @var ExternalLibInterface
+     * @var ExternalLibAdapterInterface
      */
     protected $externalLib;
     /**
@@ -61,10 +63,10 @@ class Filter extends SingletonAbstract implements FilterInterface
 
     /**
      * External lib setter
-     * @param ExternalLibInterface $externalLib
+     * @param ExternalLibAdapterInterface $externalLib
      * @return $this
      */
-    public function setExternalLib(ExternalLibInterface $externalLib)
+    public function setExternalLibAdapter(ExternalLibAdapterInterface $externalLib)
     {
         $this->externalLib = $externalLib;
         return $this;
@@ -72,13 +74,13 @@ class Filter extends SingletonAbstract implements FilterInterface
 
     /**
      * External lib getter
-     * @return ExternalLibInterface
-     * @throws Exception
+     * @return ExternalLibAdapterInterface
+     * @throws ExternalLibAdapterNotSetException
      */
     public function getExternalLib()
     {
-        if (!$this->externalLib instanceof ExternalLibInterface) {
-            throw new Exception('An external library has not been set.');
+        if (!$this->externalLib instanceof ExternalLibAdapterInterface) {
+            throw new ExternalLibAdapterNotSetException('An external library has not been set.');
         }
         return $this->externalLib;
     }
@@ -176,7 +178,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $filterType A filter type
      * @param array $options Additional options. For config options use an index named after the CUSTOM_CONFIGURATIONS_INDEX_NAME constant
      * @return mixed The clean value
-     * @throws Exception
+     * @throws FilterTypeNotValidException
      */
     public function filter($dirtyVar, $filterType, array $options = [])
     {
@@ -204,7 +206,7 @@ class Filter extends SingletonAbstract implements FilterInterface
                 break;
             default:
                 $validTypes = implode('\',\'', $this->allowedFilters);
-                throw new Exception("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
+                throw new FilterTypeNotValidException("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
                 break;
         }
         return $cleanVar;

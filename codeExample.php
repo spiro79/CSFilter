@@ -5,12 +5,14 @@
  * Time: 3:12 PM
  */
 
-
 require_once 'vendor/autoload.php';
 require_once './autoload.php';
 
-use DE\CSFilter\SFilter;
-use \DE\CSFilter\ExternalLib\HTMLPurifierExternalLib;
+use DE\CSFilter\Filter;
+use \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter;
+
+//Create object and provide adapter
+$filter = Filter::getInstance()->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
 
 $dirtyVar = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong> to http://example.com</div>';
 
@@ -23,10 +25,6 @@ $configOptions = [
     ]
 ];
 
-$externalLibrary = new HTMLPurifierExternalLib();
+$cleanVar = $filter->filter($dirtyVar,Filter::TYPE_CUSTOM, $configOptions);
 
-SFilter::setFilter($externalLibrary);
-
-$cleanVar = SFilter::filter($dirtyVar,Filter::TYPE_CUSTOM, $configOptions);
-
-echo $cleanVar;
+echo 'Dirty value:', PHP_EOL, $dirtyVar, PHP_EOL, 'Clean Value:', PHP_EOL, $cleanVar;

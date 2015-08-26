@@ -5,18 +5,18 @@
  * Time: 9:25 AM
  */
 
-namespace DE\CSFilter\ExternalLib;
+namespace DE\CSFilter\ExternalLibAdapter;
 
 use \HTMLPurifier;
 use \HTMLPurifier_Config;
-use DE\CSFilter\Exception;
+use DE\CSFilter\Exceptions\ConfigurationIndexNotFoundException;
 use DE\CSFilter\Filter;
 
 /**
- * Class HTMLPurifierExternalLib
- * @package DE\CSFilter\ExternalLib
+ * Class HTMLPurifierExternalLibAdapter
+ * @package DE\CSFilter\ExternalLibAdapter
  */
-class HTMLPurifierExternalLib implements ExternalLibInterface
+class HTMLPurifierExternalLibAdapter implements ExternalLibAdapterInterface
 {
     /**
      * Array of configs needed for purifying some variables with the purifier library
@@ -52,7 +52,6 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
      * @param mixed $dirtyVar The value to be cleansed
      * @param array $options Additional options [OPTIONAL]
      * @return string
-     * @throws Exception
      */
     public function filterString($dirtyVar, array $options = [])
     {
@@ -69,7 +68,6 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
-     * @throws Exception
      */
     public function filterRich($dirtyVar, array $options = [])
     {
@@ -89,7 +87,7 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options. For config options use an index named Filter::CUSTOM_CONFIGURATIONS_INDEX_NAME
      * @return string The cleansed string
-     * @throws Exception
+     * @throws ConfigurationIndexNotFoundException
      */
     public function filterCustom($dirtyVar, array $options = [])
     {
@@ -102,7 +100,7 @@ class HTMLPurifierExternalLib implements ExternalLibInterface
             $configObjOptions = $options;
         } else {
             $indexName = Filter::CUSTOM_CONFIGURATIONS_INDEX_NAME;
-            throw new Exception("Index {$indexName} for custom configurations was not found!!!");
+            throw new ConfigurationIndexNotFoundException("Index {$indexName} for custom configurations was not found!!!");
         }
         return $this->clean($dirtyVar, Filter::TYPE_CUSTOM, $configObjOptions);
     }
