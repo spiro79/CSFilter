@@ -16,7 +16,7 @@ To load it with composer:
   "repositories": [
     {
       "type" : "vcs",
-      "url" : "git@198.90.23.183:eandreakis/CSFilter.git"
+      "url" : "git@github.com:spiro79/CSFilter.git"
     }
   ]
 }
