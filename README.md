@@ -1,6 +1,4 @@
-# Direct Energy
-
-## Cybersecurity Filter class
+# Security Filter class
 
 A Filter class that will filter data to prevent against XSS attacks.
 
