@@ -1,9 +1,15 @@
 <?php
-
 /**
- * Ernesto Spiro Peimbert Andreakis
+ * Author: Ernesto Spiro Peimbert Andreakis
  * Date: 8/26/2015
  * Time: 4:48 PM
+ */
+
+use DE\CSFilter\Filter;
+use \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter;
+
+/**
+ * Class FilterAdapterIntegrationTest
  */
 class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
 {
@@ -19,18 +25,13 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    protected function tearDown()
-    {
-        DE\CSFilter\Filter::tearDown();
-    }
-
     /**
      * Test setting the external library
      */
     public function testSetExternalLib()
     {
-        $libAdapter = new \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter();
-        $filterInstance = DE\CSFilter\Filter::getInstance();
+        $libAdapter = new HTMLPurifierExternalLibAdapter();
+        $filterInstance = new Filter();
         $response = $filterInstance->setExternalLibAdapter($libAdapter);
         $expectedInstance = 'DE\CSFilter\Filter';
         $this->assertInstanceOf($expectedInstance, $response);
@@ -41,8 +42,8 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function testGetExternalLib()
     {
-        $libAdapter = new \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter();
-        $filterInstance = DE\CSFilter\Filter::getInstance();
+        $libAdapter = new HTMLPurifierExternalLibAdapter();
+        $filterInstance = new Filter();
         $filterInstance->setExternalLibAdapter($libAdapter);
         $externalLib = $filterInstance->getExternalLib();
         $expectedInterface = 'DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface';
@@ -56,8 +57,8 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $dirtyVal = '<span onClick="alert(\'Hello World\');">Valid string</span>';
         $expectedResult = 'Valid string';
-        $filterInstance = DE\CSFilter\Filter::getInstance();
-        $externalLibrary = new \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter();
+        $filterInstance = new Filter();
+        $externalLibrary = new HTMLPurifierExternalLibAdapter();
         $filterInstance->setExternalLibAdapter($externalLibrary);
         $cleanVal = $filterInstance->filterString($dirtyVal);
         $this->assertEquals($expectedResult, $cleanVal);
@@ -70,8 +71,8 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $dirtyVal = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong></div>';
         $expectedResult = '<strong>Valid string</strong>';
-        $filterInstance = DE\CSFilter\Filter::getInstance();
-        $externalLibrary = new \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter();
+        $filterInstance = new Filter();
+        $externalLibrary = new HTMLPurifierExternalLibAdapter();
         $filterInstance->setExternalLibAdapter($externalLibrary);
         $cleanVal = $filterInstance->filterRich($dirtyVal);
         $this->assertEquals($expectedResult, $cleanVal);
@@ -84,8 +85,8 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $dirtyVal = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong> to http://example.com</div>';
         $expectedResult = 'Valid string to <a href="http://example.com">http://example.com</a>';
-        $filterInstance = DE\CSFilter\Filter::getInstance();
-        $externalLibrary = new \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter();
+        $filterInstance = new Filter();
+        $externalLibrary = new HTMLPurifierExternalLibAdapter();
         $filterInstance->setExternalLibAdapter($externalLibrary);
         $configOptions = [
             'configObjOptions' => [

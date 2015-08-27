@@ -12,7 +12,7 @@ use DE\CSFilter\Filter;
 use \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter;
 
 //Create object and provide adapter
-$filter = Filter::getInstance()->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
+$filter = (new Filter())->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
 
 $dirtyVar = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong> to http://example.com</div>';
 

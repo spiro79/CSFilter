@@ -55,12 +55,12 @@ use DE\CSFilter\Filter;
 use DE\CSFilter\ExternalLib\HTMLPurifierExternalLibAdapter;
 
 //Setting up the filter
-$filter = Filter::getInstance();
+$filter = new Filter();
 $externalLibAdapter = new HTMLPurifierExternalLibAdapter();
 $filter->setExternalLibAdapter($externalLibAdapter);
 
 //The short form:
-//$filter = Filter::getInstance()->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
+//$filter = (new Filter())->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
 
 //Use it
 $cleanNumber = $filter->filterInt('5sdjkhfdkfh');

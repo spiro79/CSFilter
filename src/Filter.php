@@ -16,7 +16,7 @@ use DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface;
  * Class Filter
  * @package DE\CSFilter
  */
-class Filter extends SingletonAbstract implements FilterInterface
+class Filter implements FilterInterface
 {
     /**
      * An instance of the external library to be used to execute complex filters
@@ -31,34 +31,24 @@ class Filter extends SingletonAbstract implements FilterInterface
     protected $allowedFilters = [];
 
     /**
-     * The class instance
-     * @access protected
-     * @var self
-     */
-    protected static $instance;
-
-    /**
      * Initialize the object
      */
     protected function init()
     {
         $reflectionClass = new ReflectionClass('DE\CSFilter\FilterInterface');
         $constants = $reflectionClass->getConstants();
-        self::$instance->allowedFilters = array_values($constants);
+        foreach($constants as $name => $value) {
+            if(strstr($name, 'TYPE_')) {
+                $this->allowedFilters[] = $value;
+            }
+        }
     }
 
     /**
-     * Gets the singleton instance
-     * @static
-     * @return self
+     * Class constructor
      */
-    public static function getInstance()
-    {
-        if (null === self::$instance) {
-            self::$instance = new static();
-            self::$instance->init();
-        }
-        return self::$instance;
+    public function __construct() {
+        $this->init();
     }
 
     /**
@@ -141,7 +131,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param mixed $dirtyVar The value to be cleansed
      * @param array $options Additional options [OPTIONAL]
      * @return string
-     * @throws Exception
+     * @throws ExternalLibAdapterNotSetException
      */
     public function filterString($dirtyVar, array $options = [])
     {
@@ -153,7 +143,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
-     * @throws Exception
+     * @throws ExternalLibAdapterNotSetException
      */
     public function filterRich($dirtyVar, array $options = [])
     {
@@ -165,7 +155,7 @@ class Filter extends SingletonAbstract implements FilterInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
      * @return string The cleansed string
-     * @throws Exception
+     * @throws ExternalLibAdapterNotSetException
      */
     public function filterCustom($dirtyVar, array $options = [])
     {
@@ -210,14 +200,5 @@ class Filter extends SingletonAbstract implements FilterInterface
                 break;
         }
         return $cleanVar;
-    }
-
-    /**
-     * Tear down.
-     * Resets everything to initial state. Helps with Unit testing ;)
-     */
-    public static function tearDown()
-    {
-        static::$instance = null;
     }
 }
