@@ -1,17 +1,17 @@
 <?php
 /**
  * Author: Ernesto Spiro Peimbert Andreakis
- * Date: 8/26/2015
- * Time: 4:15 PM
+ * Date: 8/28/2015
+ * Time: 12:11 PM
  */
 
 namespace DE\CSFilter\Exceptions;
 
 /**
- * Class ConfigurationIndexNotFoundException
+ * Class Exception
  * @package DE\CSFilter\Exceptions
  */
-class ConfigurationIndexNotFoundException extends Exception
+class Exception extends \Exception
 {
 
 }

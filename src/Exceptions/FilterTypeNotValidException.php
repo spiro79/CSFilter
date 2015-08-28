@@ -11,7 +11,7 @@ namespace DE\CSFilter\Exceptions;
  * Class FilterTypeNotValidException
  * @package DE\CSFilter\Exceptions
  */
-class FilterTypeNotValidException extends \Exception
+class FilterTypeNotValidException extends Exception
 {
 
 }

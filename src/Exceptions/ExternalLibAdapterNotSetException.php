@@ -11,7 +11,7 @@ namespace DE\CSFilter\Exceptions;
  * Class ExternalLibAdapterNotSetException
  * @package DE\CSFilter\Exceptions
  */
-class ExternalLibAdapterNotSetException extends \Exception
+class ExternalLibAdapterNotSetException extends Exception
 {
 
 }
