@@ -60,7 +60,7 @@ class HTMLPurifierExternalLibAdapter implements ExternalLibAdapterInterface
             'Core.Encoding' => $charset,
             'HTML.Allowed' => '',
         ];
-        return $this->clean($dirtyVar, Filter::TYPE_STRING, $configObjOptions);
+        return filter_var($this->clean($dirtyVar, Filter::TYPE_STRING, $configObjOptions), FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH);
     }
 
     /**
