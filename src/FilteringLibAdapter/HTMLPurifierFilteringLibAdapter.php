@@ -5,21 +5,21 @@
  * Time: 9:25 AM
  */
 
-namespace DE\CSFilter\ExternalLibAdapter;
+namespace FireEngine\XSSFilter\FilteringLibAdapter;
 
 use \HTMLPurifier;
 use \HTMLPurifier_Config;
-use DE\CSFilter\Exceptions\ConfigurationIndexNotFoundException;
-use DE\CSFilter\Filter;
+use FireEngine\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
+use FireEngine\XSSFilter\Filter;
 
 /**
- * Class HTMLPurifierExternalLibAdapter
- * @package DE\CSFilter\ExternalLibAdapter
+ * Class HTMLPurifierFilteringExternalLibAdapter
+ * @package FireEngine\XSSFilter\FilteringLibAdapter
  */
-class HTMLPurifierExternalLibAdapter implements ExternalLibAdapterInterface
+class HTMLPurifierFilteringLibAdapter implements FilteringLibAdapterInterface
 {
     /**
-     * Array of configs needed for purifying some variables with the purifier library
+     * Array of configs needed for purifying some variables with the filtering library
      * @var array
      */
     protected static $configs = [];
@@ -28,23 +28,23 @@ class HTMLPurifierExternalLibAdapter implements ExternalLibAdapterInterface
      * Cleans a variable according to type and settings by using a third party library
      * @param string $dirtyValue The value to be cleaned
      * @param string $filterType What type of filter to apply
-     * @param array $optionsForPurifierLib Assoc array of options for the library conf object
+     * @param array $optionsForFilteringLib Assoc array of options for the library conf object
      * @return string The clean value
      */
-    public function clean($dirtyValue, $filterType, array $optionsForPurifierLib = [])
+    public function clean($dirtyValue, $filterType, array $optionsForFilteringLib = [])
     {
-        $configHash = md5($filterType . json_encode($optionsForPurifierLib));
+        $configHash = md5($filterType . json_encode($optionsForFilteringLib));
         if (isset(self::$configs[$configHash])) {
             $configObj = self::$configs[$configHash];
         } else {
             $configObj = HTMLPurifier_Config::createDefault();
-            foreach ($optionsForPurifierLib as $option => $value) {
+            foreach ($optionsForFilteringLib as $option => $value) {
                 $configObj->set($option, $value);
             }
             self::$configs[$configHash] = $configObj;
         }
-        $purifierLib = new HTMLPurifier($configObj);
-        return $purifierLib->purify($dirtyValue);
+        $filteringLib = new HTMLPurifier($configObj);
+        return $filteringLib->purify($dirtyValue);
     }
 
     /**

@@ -5,24 +5,24 @@
  * Time: 2:40 PM
  */
 
-namespace DE\CSFilter;
+namespace FireEngine\XSSFilter;
 
-use DE\CSFilter\Exceptions\ExternalLibAdapterNotSetException;
-use DE\CSFilter\Exceptions\FilterTypeNotValidException;
+use FireEngine\XSSFilter\Exceptions\FilteringLibAdapterNotSetException;
+use FireEngine\XSSFilter\Exceptions\FilterTypeNotValidException;
 use \ReflectionClass;
-use DE\CSFilter\ExternalLibAdapter\ExternalLibAdapterInterface;
+use FireEngine\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface;
 
 /**
  * Class Filter
- * @package DE\CSFilter
+ * @package FireEngine\XSSFilter
  */
 class Filter implements FilterInterface
 {
     /**
      * An instance of the external library to be used to execute complex filters
-     * @var ExternalLibAdapterInterface
+     * @var FilteringLibAdapterInterface
      */
-    protected $externalLib;
+    protected $FilteringLib;
     /**
      * An array with the allowed options for the filters
      * @access protected
@@ -35,10 +35,10 @@ class Filter implements FilterInterface
      */
     protected function init()
     {
-        $reflectionClass = new ReflectionClass('DE\CSFilter\FilterInterface');
+        $reflectionClass = new ReflectionClass('FireEngine\XSSFilter\FilterInterface');
         $constants = $reflectionClass->getConstants();
-        foreach($constants as $name => $value) {
-            if(strstr($name, 'TYPE_')) {
+        foreach ($constants as $name => $value) {
+            if (strstr($name, 'TYPE_')) {
                 $this->allowedFilters[] = $value;
             }
         }
@@ -47,32 +47,33 @@ class Filter implements FilterInterface
     /**
      * Class constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->init();
     }
 
     /**
      * External lib setter
-     * @param ExternalLibAdapterInterface $externalLib
+     * @param FilteringLibAdapterInterface $FilteringLib
      * @return $this
      */
-    public function setExternalLibAdapter(ExternalLibAdapterInterface $externalLib)
+    public function setFilteringLibAdapter(FilteringLibAdapterInterface $FilteringLib)
     {
-        $this->externalLib = $externalLib;
+        $this->FilteringLib = $FilteringLib;
         return $this;
     }
 
     /**
      * External lib getter
-     * @return ExternalLibAdapterInterface
-     * @throws ExternalLibAdapterNotSetException
+     * @return FilteringLibAdapterInterface
+     * @throws FilteringLibAdapterNotSetException
      */
-    public function getExternalLib()
+    public function getFilteringLib()
     {
-        if (!$this->externalLib instanceof ExternalLibAdapterInterface) {
-            throw new ExternalLibAdapterNotSetException('An external library has not been set.');
+        if (!$this->FilteringLib instanceof FilteringLibAdapterInterface) {
+            throw new FilteringLibAdapterNotSetException('An external library has not been set.');
         }
-        return $this->externalLib;
+        return $this->FilteringLib;
     }
 
     /**
@@ -89,7 +90,7 @@ class Filter implements FilterInterface
      * @param mixed $dirtyVar The dirty value
      * @return bool
      */
-    public function filterBoolean($dirtyVar)
+    public function filterBool($dirtyVar)
     {
         return (bool)($dirtyVar);
     }
@@ -131,11 +132,11 @@ class Filter implements FilterInterface
      * @param mixed $dirtyVar The value to be cleansed
      * @param array $options Additional options [OPTIONAL]
      * @return string
-     * @throws ExternalLibAdapterNotSetException
+     * @throws FilteringLibAdapterNotSetException
      */
     public function filterString($dirtyVar, array $options = [])
     {
-        return $this->getExternalLib()->filterString($dirtyVar, $options);
+        return $this->getFilteringLib()->filterString($dirtyVar, $options);
     }
 
     /**
@@ -143,11 +144,11 @@ class Filter implements FilterInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options [OPTIONAL]
      * @return string The cleansed string
-     * @throws ExternalLibAdapterNotSetException
+     * @throws FilteringLibAdapterNotSetException
      */
     public function filterRich($dirtyVar, array $options = [])
     {
-        return $this->getExternalLib()->filterRich($dirtyVar, $options);
+        return $this->getFilteringLib()->filterRich($dirtyVar, $options);
     }
 
     /**
@@ -155,11 +156,11 @@ class Filter implements FilterInterface
      * @param string $dirtyVar The dirty string
      * @param array $options Additional options. For config options use an index named self::CUSTOM_CONFIGURATIONS_INDEX_NAME
      * @return string The cleansed string
-     * @throws ExternalLibAdapterNotSetException
+     * @throws FilteringLibAdapterNotSetException
      */
     public function filterCustom($dirtyVar, array $options = [])
     {
-        return $this->getExternalLib()->filterCustom($dirtyVar, $options);
+        return $this->getFilteringLib()->filterCustom($dirtyVar, $options);
     }
 
     /**
@@ -172,32 +173,17 @@ class Filter implements FilterInterface
      */
     public function filter($dirtyVar, $filterType, array $options = [])
     {
-        switch ($filterType) {
-            case self::TYPE_BOOLEAN:
-                $cleanVar = $this->filterBoolean($dirtyVar);
-                break;
-            case self::TYPE_FLOAT:
-                $cleanVar = $this->filterFloat($dirtyVar);
-                break;
-            case self::TYPE_INTEGER:
-                $cleanVar = $this->filterInt($dirtyVar);
-                break;
-            case self::TYPE_EMAIL:
-                $cleanVar = $this->filterEmail($dirtyVar);
-                break;
-            case self::TYPE_STRING:
-                $cleanVar = $this->filterString($dirtyVar);
-                break;
-            case self::TYPE_RICH:
-                $cleanVar = $this->filterRich($dirtyVar);
-                break;
-            case self::TYPE_CUSTOM:
-                $cleanVar = $this->filterCustom($dirtyVar, $options);
-                break;
-            default:
-                $validTypes = implode('\',\'', $this->allowedFilters);
-                throw new FilterTypeNotValidException("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
-                break;
+        $filterType = strtolower($filterType);
+        $method = 'filter' . ucfirst($filterType);
+        if (method_exists($this, $method)) {
+            if ($filterType !== self::TYPE_CUSTOM) {
+                $cleanVar = $this->$method($dirtyVar);
+            } else {
+                $cleanVar = $this->$method($dirtyVar, $options);
+            }
+        } else {
+            $validTypes = implode('\',\'', $this->allowedFilters);
+            throw new FilterTypeNotValidException("Filter type provided is not valid. Got: '{$filterType}'. Expecting one of: '{$validTypes}'");
         }
         return $cleanVar;
     }

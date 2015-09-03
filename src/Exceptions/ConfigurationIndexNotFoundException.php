@@ -5,11 +5,11 @@
  * Time: 4:15 PM
  */
 
-namespace DE\CSFilter\Exceptions;
+namespace FireEngine\XSSFilter\Exceptions;
 
 /**
  * Class ConfigurationIndexNotFoundException
- * @package DE\CSFilter\Exceptions
+ * @package FireEngine\XSSFilter\Exceptions
  */
 class ConfigurationIndexNotFoundException extends Exception
 {

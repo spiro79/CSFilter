@@ -5,11 +5,11 @@
  * Time: 4:04 PM
  */
 
-namespace DE\CSFilter\Exceptions;
+namespace FireEngine\XSSFilter\Exceptions;
 
 /**
  * Class FilterTypeNotValidException
- * @package DE\CSFilter\Exceptions
+ * @package FireEngine\XSSFilter\Exceptions
  */
 class FilterTypeNotValidException extends Exception
 {

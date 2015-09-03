@@ -5,15 +5,15 @@
  * Time: 12:37 AM
  */
 
-namespace DE\CSFilter\ExternalLibAdapter;
+namespace FireEngine\XSSFilter\FilteringLibAdapter;
 
-use DE\CSFilter\Exceptions\ConfigurationIndexNotFoundException;
+use FireEngine\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
 
 /**
- * Interface ExternalLibAdapterInterface
- * @package DE\CSFilter\ExternalLibAdapter
+ * Interface FilteringLibAdapterInterface
+ * @package FireEngine\XSSFilter\FilteringLibAdapter
  */
-interface ExternalLibAdapterInterface
+interface FilteringLibAdapterInterface
 {
     /**
      * Cleans a variable according to type and settings by using a third party library

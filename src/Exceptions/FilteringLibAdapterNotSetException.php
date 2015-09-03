@@ -1,17 +1,17 @@
 <?php
 /**
  * Author: Ernesto Spiro Peimbert Andreakis
- * Date: 8/28/2015
- * Time: 12:11 PM
+ * Date: 8/26/2015
+ * Time: 4:01 PM
  */
 
 namespace FireEngine\XSSFilter\Exceptions;
 
 /**
- * Class Exception
+ * Class FilteringLibAdapterNotSetException
  * @package FireEngine\XSSFilter\Exceptions
  */
-class Exception extends \Exception
+class FilteringLibAdapterNotSetException extends Exception
 {
 
 }

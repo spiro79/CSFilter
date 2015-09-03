@@ -6,13 +6,12 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once './autoload.php';
 
-use DE\CSFilter\Filter;
-use \DE\CSFilter\ExternalLibAdapter\HTMLPurifierExternalLibAdapter;
+use FireEngine\XSSFilter\Filter;
+use FireEngine\XSSFilter\FilteringLibAdapter\HTMLPurifierFilteringLibAdapter;
 
 //Create object and provide adapter
-$filter = (new Filter())->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
+$filter = (new Filter())->setFilteringLibAdapter(new HTMLPurifierFilteringLibAdapter());
 
 $dirtyVar = '<div onClick="alert(\'Hello World\');"><strong>Valid string</strong> to http://example.com</div>';
 
@@ -25,6 +24,6 @@ $configOptions = [
     ]
 ];
 
-$cleanVar = $filter->filter($dirtyVar,Filter::TYPE_CUSTOM, $configOptions);
+$cleanVar = $filter->filter($dirtyVar, Filter::TYPE_CUSTOM, $configOptions);
 
 echo 'Dirty value:', PHP_EOL, $dirtyVar, PHP_EOL, 'Clean Value:', PHP_EOL, $cleanVar;
