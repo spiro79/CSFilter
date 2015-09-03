@@ -5,16 +5,16 @@
  * Time: 2:40 PM
  */
 
-namespace FireEngine\XSSFilter;
+namespace Security\XSSFilter;
 
-use FireEngine\XSSFilter\Exceptions\FilteringLibAdapterNotSetException;
-use FireEngine\XSSFilter\Exceptions\FilterTypeNotValidException;
+use Security\XSSFilter\Exceptions\FilteringLibAdapterNotSetException;
+use Security\XSSFilter\Exceptions\FilterTypeNotValidException;
 use \ReflectionClass;
-use FireEngine\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface;
+use Security\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface;
 
 /**
  * Class Filter
- * @package FireEngine\XSSFilter
+ * @package Security\XSSFilter
  */
 class Filter implements FilterInterface
 {
@@ -35,7 +35,7 @@ class Filter implements FilterInterface
      */
     protected function init()
     {
-        $reflectionClass = new ReflectionClass('FireEngine\XSSFilter\FilterInterface');
+        $reflectionClass = new ReflectionClass('Security\XSSFilter\FilterInterface');
         $constants = $reflectionClass->getConstants();
         foreach ($constants as $name => $value) {
             if (strstr($name, 'TYPE_')) {

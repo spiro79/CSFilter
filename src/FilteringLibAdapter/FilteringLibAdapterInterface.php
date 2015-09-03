@@ -5,13 +5,13 @@
  * Time: 12:37 AM
  */
 
-namespace FireEngine\XSSFilter\FilteringLibAdapter;
+namespace Security\XSSFilter\FilteringLibAdapter;
 
-use FireEngine\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
+use Security\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
 
 /**
  * Interface FilteringLibAdapterInterface
- * @package FireEngine\XSSFilter\FilteringLibAdapter
+ * @package Security\XSSFilter\FilteringLibAdapter
  */
 interface FilteringLibAdapterInterface
 {

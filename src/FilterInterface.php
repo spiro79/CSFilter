@@ -5,11 +5,11 @@
  * Time: 2:28 PM
  */
 
-namespace FireEngine\XSSFilter;
+namespace Security\XSSFilter;
 
 /**
  * Interface FilterInterface
- * @package FireEngine\XSSFilter
+ * @package Security\XSSFilter
  */
 interface FilterInterface
 {

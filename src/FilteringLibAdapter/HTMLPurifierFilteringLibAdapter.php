@@ -5,16 +5,16 @@
  * Time: 9:25 AM
  */
 
-namespace FireEngine\XSSFilter\FilteringLibAdapter;
+namespace Security\XSSFilter\FilteringLibAdapter;
 
 use \HTMLPurifier;
 use \HTMLPurifier_Config;
-use FireEngine\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
-use FireEngine\XSSFilter\Filter;
+use Security\XSSFilter\Exceptions\ConfigurationIndexNotFoundException;
+use Security\XSSFilter\Filter;
 
 /**
  * Class HTMLPurifierFilteringExternalLibAdapter
- * @package FireEngine\XSSFilter\FilteringLibAdapter
+ * @package Security\XSSFilter\FilteringLibAdapter
  */
 class HTMLPurifierFilteringLibAdapter implements FilteringLibAdapterInterface
 {

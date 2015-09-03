@@ -1,5 +1,5 @@
 {
-    "name": "fireengine/xssfilter",
+    "name": "security/xssfilter",
     "description": "DE Cybersecurity library to face XSS vulnerabilities",
     "type": "library",
     "require" : {
@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FireEngine\\XSSFilter\\": "src/"
+            "Security\\XSSFilter\\": "src/"
         }
     },
     "authors": [

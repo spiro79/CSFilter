@@ -5,11 +5,11 @@
  * Time: 12:11 PM
  */
 
-namespace FireEngine\XSSFilter\Exceptions;
+namespace Security\XSSFilter\Exceptions;
 
 /**
  * Class Exception
- * @package FireEngine\XSSFilter\Exceptions
+ * @package Security\XSSFilter\Exceptions
  */
 class Exception extends \Exception
 {

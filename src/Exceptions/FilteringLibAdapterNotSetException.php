@@ -5,11 +5,11 @@
  * Time: 4:01 PM
  */
 
-namespace FireEngine\XSSFilter\Exceptions;
+namespace Security\XSSFilter\Exceptions;
 
 /**
  * Class FilteringLibAdapterNotSetException
- * @package FireEngine\XSSFilter\Exceptions
+ * @package Security\XSSFilter\Exceptions
  */
 class FilteringLibAdapterNotSetException extends Exception
 {

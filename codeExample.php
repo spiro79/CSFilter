@@ -7,8 +7,8 @@
 
 require_once 'vendor/autoload.php';
 
-use FireEngine\XSSFilter\Filter;
-use FireEngine\XSSFilter\FilteringLibAdapter\HTMLPurifierFilteringLibAdapter;
+use Security\XSSFilter\Filter;
+use Security\XSSFilter\FilteringLibAdapter\HTMLPurifierFilteringLibAdapter;
 
 //Create object and provide adapter
 $filter = (new Filter())->setFilteringLibAdapter(new HTMLPurifierFilteringLibAdapter());

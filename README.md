@@ -30,7 +30,7 @@ If you need HTMLPurifier to work you **MUST** include it to your composer file.
 
 We can use the library by creating an instance of the Filter class.
 
-**Please note** that although the examples show the use of the *HTMLPurifier* external library, we can use whatever library we want by creating an adapter that implements the FireEngine\XSSFilter\ExternalLib\ExternalLibInterface.
+**Please note** that although the examples show the use of the *HTMLPurifier* external library, we can use whatever library we want by creating an adapter that implements the Security\XSSFilter\ExternalLib\ExternalLibInterface.
 
 ## Filter types
 
@@ -51,8 +51,8 @@ You can also refer to the example file:
 *codeExample.php*
 
 ```
-use FireEngine\XSSFilter\Filter;
-use FireEngine\XSSFilter\ExternalLib\HTMLPurifierExternalLibAdapter;
+use Security\XSSFilter\Filter;
+use Security\XSSFilter\ExternalLib\HTMLPurifierExternalLibAdapter;
 
 //Setting up the filter
 $filter = new Filter();

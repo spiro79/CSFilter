@@ -5,7 +5,7 @@
  * Time: 9:01 PM
  */
 
-use FireEngine\XSSFilter\Filter;
+use Security\XSSFilter\Filter;
 
 /**
  * Class FilterTest
@@ -19,7 +19,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
      */
     protected function getFilteringLibraryMock()
     {
-        $mock = $this->getMockBuilder('FireEngine\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface')
+        $mock = $this->getMockBuilder('Security\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface')
             ->setMethods(['clean', 'filterString', 'filterRich', 'filterCustom'])
             ->getMock();
         $mock->method('filterString')
@@ -39,7 +39,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $mock = $this->getFilteringLibraryMock();
         $filterInstance = new Filter();
         $response = $filterInstance->setFilteringLibAdapter($mock);
-        $expectedInstance = 'FireEngine\XSSFilter\Filter';
+        $expectedInstance = 'Security\XSSFilter\Filter';
         $this->assertInstanceOf($expectedInstance, $response);
     }
 
@@ -63,13 +63,13 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $filterInstance = new Filter();
         $filterInstance->setFilteringLibAdapter($mock);
         $FilteringLib = $filterInstance->getFilteringLib();
-        $expectedInterface = 'FireEngine\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface';
+        $expectedInterface = 'Security\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface';
         $this->assertInstanceOf($expectedInterface, $FilteringLib);
     }
 
     /**
      * Tests the exception thrown when the external lib is not set
-     * @expectedException \FireEngine\XSSFilter\Exceptions\FilteringLibAdapterNotSetException
+     * @expectedException \Security\XSSFilter\Exceptions\FilteringLibAdapterNotSetException
      */
     public function testGetFilteringLibWhenUnset()
     {
@@ -82,7 +82,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAllowedFilters()
     {
-        $reflectionClass = new ReflectionClass('FireEngine\XSSFilter\FilterInterface');
+        $reflectionClass = new ReflectionClass('Security\XSSFilter\FilterInterface');
         $constants = $reflectionClass->getConstants();
         $expectedAllowedFilters = [];
         foreach ($constants as $name => $value) {
@@ -109,7 +109,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test when an invalid filter type is provided
-     * @expectedException \FireEngine\XSSFilter\Exceptions\FilterTypeNotValidException
+     * @expectedException \Security\XSSFilter\Exceptions\FilterTypeNotValidException
      */
     public function testInvalidFilterType()
     {

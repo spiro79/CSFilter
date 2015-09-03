@@ -5,8 +5,8 @@
  * Time: 4:48 PM
  */
 
-use FireEngine\XSSFilter\Filter;
-use FireEngine\XSSFilter\FilteringLibAdapter\HTMLPurifierFilteringLibAdapter;
+use Security\XSSFilter\Filter;
+use Security\XSSFilter\FilteringLibAdapter\HTMLPurifierFilteringLibAdapter;
 
 /**
  * Class FilterAdapterIntegrationTest
@@ -21,7 +21,7 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
         $libAdapter = new HTMLPurifierFilteringLibAdapter();
         $filterInstance = new Filter();
         $response = $filterInstance->setFilteringLibAdapter($libAdapter);
-        $expectedInstance = 'FireEngine\XSSFilter\Filter';
+        $expectedInstance = 'Security\XSSFilter\Filter';
         $this->assertInstanceOf($expectedInstance, $response);
     }
 
@@ -34,7 +34,7 @@ class FilterAdapterIntegrationTest extends PHPUnit_Framework_TestCase
         $filterInstance = new Filter();
         $filterInstance->setFilteringLibAdapter($libAdapter);
         $FilteringLib = $filterInstance->getFilteringLib();
-        $expectedInterface = 'FireEngine\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface';
+        $expectedInterface = 'Security\XSSFilter\FilteringLibAdapter\FilteringLibAdapterInterface';
         $this->assertInstanceOf($expectedInterface, $FilteringLib);
     }
 
