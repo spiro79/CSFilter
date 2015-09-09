@@ -150,6 +150,10 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $expectedTrueFloatResult = -5.9e-10;
         $cleanFalse = $filterInstance->filterFloat($dirtyTrueFloat);
         $this->assertEquals($expectedTrueFloatResult, $cleanFalse);
+        $trueFloat = 132.22;
+        $expectedTrueFloatResult2 = 132.22;
+        $cleanFalse = $filterInstance->filterFloat($trueFloat);
+        $this->assertEquals($expectedTrueFloatResult2, $cleanFalse);
     }
 
     /**
@@ -166,6 +170,22 @@ class FilterTest extends PHPUnit_Framework_TestCase
         $expectedTrueIntResult = -5;
         $cleanFalse = $filterInstance->filterInt($dirtyTrueInt);
         $this->assertEquals($expectedTrueIntResult, $cleanFalse);
+        $dirtyTrueInt = -6.9;
+        $expectedTrueIntResult = -6;
+        $cleanFalse = $filterInstance->filterInt($dirtyTrueInt);
+        $this->assertEquals($expectedTrueIntResult, $cleanFalse);
+    }
+
+    /**
+     * Test a string to be filtered to number
+     */
+    public function testFilterNumber()
+    {
+        $dirtyVal = '<pre>-4.56</pre>';
+        $expectedResult = '-4.56';
+        $filterInstance = new Filter();
+        $cleanVal = $filterInstance->filterNumber($dirtyVal);
+        $this->assertEquals($expectedResult, $cleanVal);
     }
 
     /**

@@ -117,6 +117,16 @@ class Filter implements FilterInterface
     }
 
     /**
+     * Filters a value and returns an int
+     * @param mixed $dirtyVar The dirty value
+     * @return string A numeric string
+     */
+    public function filterNumber($dirtyVar)
+    {
+        return filter_var($dirtyVar, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
+    }
+
+    /**
      * Filters a value and returns a filtered email. This functions does not validate the email.
      * Remove all characters except letters, digits and !#$%&'*+-=?^_`{|}~@.[].
      * @param string $dirtyVar The dirty value

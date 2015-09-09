@@ -4,7 +4,7 @@ A Filter class that will filter data to prevent against XSS attacks.
 
 It makes use of a third party library to do complex filtering.
 
-All third party libraries must implement the ExternalLibAdapterInterface interface to be able to use it.
+All third party libraries must implement the FilteringLibAdapterInterface interface to be able to use it.
 
 To load it with composer:
 
@@ -30,7 +30,7 @@ If you need HTMLPurifier to work you **MUST** include it to your composer file.
 
 We can use the library by creating an instance of the Filter class.
 
-**Please note** that although the examples show the use of the *HTMLPurifier* external library, we can use whatever library we want by creating an adapter that implements the Security\XSSFilter\ExternalLib\ExternalLibInterface.
+**Please note** that although the examples show the use of the *HTMLPurifier* filtering library, we can use whatever library we want by creating an adapter that implements the Security\XSSFilter\FilteringLib\FilteringLibInterface.
 
 ## Filter types
 
@@ -38,6 +38,7 @@ As per the FilterInterface definition file:
 
 - TYPE_BOOLEAN
 - TYPE_INTEGER
+- TYPE_NUMBER
 - TYPE_FLOAT
 - TYPE_EMAIL
 - TYPE_STRING
@@ -52,15 +53,15 @@ You can also refer to the example file:
 
 ```
 use Security\XSSFilter\Filter;
-use Security\XSSFilter\ExternalLib\HTMLPurifierExternalLibAdapter;
+use Security\XSSFilter\FilteringLib\HTMLPurifierFilteringLibAdapter;
 
 //Setting up the filter
 $filter = new Filter();
-$externalLibAdapter = new HTMLPurifierExternalLibAdapter();
-$filter->setExternalLibAdapter($externalLibAdapter);
+$filteringLibAdapter = new HTMLPurifierFilteringLibAdapter();
+$filter->setFilteringLibAdapter($filteringLibAdapter);
 
 //The short form:
-//$filter = (new Filter())->setExternalLibAdapter(new HTMLPurifierExternalLibAdapter());
+//$filter = (new Filter())->setFilteringLibAdapter(new HTMLPurifierFilteringLibAdapter());
 
 //Use it
 $cleanNumber = $filter->filterInt('5sdjkhfdkfh');

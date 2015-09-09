@@ -9,7 +9,7 @@ namespace Security\XSSFilter;
 
 /**
  * Interface FilterInterface
- * @package Security\XSSFilter
+ * @package  Security\XSSFilter
  */
 interface FilterInterface
 {
@@ -29,6 +29,10 @@ interface FilterInterface
      * Defines a filter to be applied to an integer var
      */
     const TYPE_INTEGER = 'int';
+    /**
+     * Defines a filter to be applied to an integer var
+     */
+    const TYPE_NUMBER = 'number';
     /**
      * Defines a filter to be applied to a float var
      */
